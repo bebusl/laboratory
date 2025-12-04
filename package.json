@@ -28,5 +28,10 @@
     "node": ">=18.0.0",
     "pnpm": ">=8.0.0"
   },
-  "packageManager": "pnpm@10.24.0"
+  "packageManager": "pnpm@10.24.0",
+  "dependencies": {
+    "@jinhee/laboratory": "link:",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
+  }
 }

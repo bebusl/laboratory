@@ -37,6 +37,8 @@ lerna-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Storybook
+storybook-static
 
 # Study Docs
 docs
