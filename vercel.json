@@ -3,5 +3,6 @@
   "buildCommand": "pnpm --filter admin-lab build",
   "devCommand": "pnpm --filter admin-lab dev",
   "installCommand": "pnpm install",
-  "outputDirectory": "apps/admin-lab/.next"
+  "outputDirectory": "apps/admin-lab/.next",
+  "framework": "nextjs"
 }
