@@ -9,7 +9,7 @@ type Menu = {
 
 type CreateMenuReturn = () => Menu[];
 const createMenu: CreateMenuReturn = () => {
-  return [];
+  return [{ path: '/complex-form', title: '복잡한 폼' }];
 };
 
 const Sidebar = () => {
