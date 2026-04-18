@@ -1,0 +1,28 @@
+#!/bin/sh
+COMMIT_MSG_FILE="$1"
+FIRST_LINE=$(head -1 "$COMMIT_MSG_FILE")
+
+# conventional commit 형식(type: msg)인지 확인, 아니면 스킵
+echo "$FIRST_LINE" | grep -qE '^[a-z]+: ' || exit 0
+
+# 이미 scope 있으면(type(scope):) 스킵
+echo "$FIRST_LINE" | grep -qE '^[a-z]+\(' && exit 0
+
+# staged 파일에서 apps/XXX 또는 packages/XXX 추출
+STAGED=$(git diff --cached --name-only)
+PROJECTS=$(echo "$STAGED" \
+  | grep -oE '^(apps|packages)/[^/]+' \
+  | sort -u \
+  | sed 's|^apps/||;s|^packages/||' \
+  | tr '\n' ',' \
+  | sed 's/,$//')
+
+# 프로젝트 감지 못하면 스킵
+[ -z "$PROJECTS" ] && exit 0
+
+# type: msg → type(scope): msg
+NEW_LINE=$(echo "$FIRST_LINE" | sed -E "s/^([a-z]+): /\1($PROJECTS): /")
+
+# 파일 첫 줄 교체 (나머지 줄 유지)
+{ echo "$NEW_LINE"; tail -n +2 "$COMMIT_MSG_FILE"; } > "$COMMIT_MSG_FILE.tmp" \
+  && mv "$COMMIT_MSG_FILE.tmp" "$COMMIT_MSG_FILE"
