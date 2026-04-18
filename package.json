@@ -16,7 +16,8 @@
     "admin": "turbo dev --filter=admin-lab",
     "admin:build": "turbo build --filter=admin-lab",
     "storybook": "pnpm --filter storybook dev",
-    "storybook:build": "pnpm --filter storybook build"
+    "storybook:build": "pnpm --filter storybook build",
+    "prepare": "husky"
   },
   "keywords": [
     "monorepo",
@@ -33,6 +34,8 @@
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.0.0",
     "turbo": "^2.6.2",
     "typescript": "^5.0.0"
@@ -45,5 +48,14 @@
   "dependencies": {
     "react": "^19.2.1",
     "react-dom": "^19.2.1"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
   }
 }
