@@ -15,8 +15,8 @@
     "ci": "pnpm run format:check && pnpm run lint && pnpm run check-types && pnpm run test && pnpm run build",
     "admin": "turbo dev --filter=admin-lab",
     "admin:build": "turbo build --filter=admin-lab",
-    "storybook": "pnpm --filter storybook dev",
-    "storybook:build": "pnpm --filter storybook build",
+    "storybook": "pnpm --filter @brillbe/ui dev",
+    "storybook:build": "pnpm --filter @brillbe/ui build",
     "prepare": "husky"
   },
   "keywords": [
