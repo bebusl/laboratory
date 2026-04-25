@@ -1,0 +1,131 @@
+@use '../styles' as *;
+
+// ─── FieldSet ────────────────────────────────────────────────────────────────
+
+.fieldSet {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+}
+
+// ─── FieldLegend ─────────────────────────────────────────────────────────────
+
+.fieldLegend {
+  margin-bottom: 10px; // mb-2.5 = 10px, 변수 없음
+  font-weight: $font-weight-medium;
+}
+
+// ─── FieldGroup ──────────────────────────────────────────────────────────────
+
+.fieldGroup {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: $spacing-5;
+}
+
+// ─── Field ───────────────────────────────────────────────────────────────────
+
+.field {
+  display: flex;
+  width: 100%;
+  gap: $spacing-2;
+
+  &[data-orientation='vertical'] {
+    flex-direction: column;
+  }
+
+  &[data-orientation='horizontal'] {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  &[data-orientation='responsive'] {
+    flex-direction: column;
+
+    @include tablet-up {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+}
+
+// ─── FieldContent ────────────────────────────────────────────────────────────
+
+.fieldContent {
+  display: flex;
+  flex: 1 1 0%; // Tailwind flex-1
+  flex-direction: column;
+  gap: 2px; // gap-0.5 = 2px, 변수 없음
+}
+
+// ─── FieldLabel ──────────────────────────────────────────────────────────────
+
+.fieldLabel {
+  display: flex;
+  width: fit-content;
+  gap: $spacing-2;
+}
+
+// ─── FieldTitle ──────────────────────────────────────────────────────────────
+
+.fieldTitle {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: $spacing-2;
+  font-size: $font-size-xs;
+}
+
+// ─── FieldDescription ────────────────────────────────────────────────────────
+
+.fieldDescription {
+  text-align: left;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-normal;
+  color: $color-text-secondary;
+}
+
+// ─── FieldError ──────────────────────────────────────────────────────────────
+
+.fieldError {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-normal;
+  color: $color-error;
+}
+
+.fieldErrorList {
+  margin-left: $spacing-4;
+  display: flex;
+  list-style-type: disc;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+// ─── FieldSeparator ──────────────────────────────────────────────────────────
+
+.fieldSeparator {
+  position: relative;
+  margin-top: -$spacing-2;
+  margin-bottom: -$spacing-2;
+  height: $spacing-5;
+  font-size: $font-size-xs;
+}
+
+.fieldSeparatorLine {
+  position: absolute;
+  inset: 0;
+  top: 50%;
+  border: none;
+  border-top: 1px solid $color-border-default;
+  margin: 0;
+}
+
+.fieldSeparatorContent {
+  position: relative;
+  display: block;
+  width: fit-content;
+  margin-inline: auto;
+  padding-inline: $spacing-2;
+  background-color: $color-bg-base;
+}
