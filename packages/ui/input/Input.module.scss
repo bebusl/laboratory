@@ -1,0 +1,25 @@
+@use '../styles' as *;
+
+.root {
+  @include input-base;
+
+  height: $spacing-8;
+  border-radius: $radius-md; // rounded-none
+  padding-inline: 10px; // px-2.5 = 10px, 변수 없음
+  padding-block: $spacing-1;
+  font-size: $font-size-xs;
+
+  &::file-selector-button {
+    display: inline-flex;
+    height: $spacing-6;
+    border: 0;
+    background-color: transparent;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: rgba($color-gray-800, 0.3);
+  }
+}
