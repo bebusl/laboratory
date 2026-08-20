@@ -4,11 +4,13 @@ import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useSt
 import {
   insertAttachment,
   insertRecord,
+  listAttachments,
   listRecords,
   removeRecord,
   updateRecord as persistRecordUpdate,
   type FieldRecord,
 } from '@/database/records';
+import { deleteStoredAttachment } from '@/features/attachments/file-storage';
 import type { StoredAttachment } from '@/features/attachments/types';
 
 interface RecordContextValue {
@@ -16,7 +18,7 @@ interface RecordContextValue {
   isLoading: boolean;
   error: Error | null;
   createRecord: (
-    input: Pick<FieldRecord, 'title' | 'memo'> & { attachment?: StoredAttachment | null }
+    input: Pick<FieldRecord, 'title' | 'memo'> & { attachments?: StoredAttachment[] }
   ) => Promise<FieldRecord>;
   getRecord: (id: string) => FieldRecord | undefined;
   updateRecord: (record: FieldRecord) => Promise<void>;
@@ -63,7 +65,7 @@ export function RecordProvider({ children }: PropsWithChildren) {
       records,
       isLoading,
       error,
-      createRecord: async ({ attachment, title, memo }) => {
+      createRecord: async ({ attachments = [], title, memo }) => {
         const now = new Date().toISOString();
         const record: FieldRecord = {
           id: createRecordId(),
@@ -76,7 +78,7 @@ export function RecordProvider({ children }: PropsWithChildren) {
         await db.withTransactionAsync(async () => {
           await insertRecord(db, record);
 
-          if (attachment) {
+          for (const attachment of attachments) {
             await insertAttachment(db, record.id, attachment);
           }
         });
@@ -92,6 +94,21 @@ export function RecordProvider({ children }: PropsWithChildren) {
         ]);
       },
       deleteRecord: async id => {
+        const attachments = await listAttachments(db, id);
+        const failedAttachments: string[] = [];
+
+        for (const attachment of attachments) {
+          try {
+            deleteStoredAttachment(attachment.uri);
+          } catch {
+            failedAttachments.push(attachment.name);
+          }
+        }
+
+        if (failedAttachments.length > 0) {
+          throw new Error(`첨부파일을 모두 삭제하지 못했습니다: ${failedAttachments.join(', ')}`);
+        }
+
         await removeRecord(db, id);
         setRecords(current => current.filter(record => record.id !== id));
       },

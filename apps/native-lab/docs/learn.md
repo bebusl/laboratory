@@ -71,3 +71,12 @@ pnpm --filter native-lab test
 - iOS에서 선택 결과는 sandbox 밖의 원본 경로가 아니라 접근 가능한 임시 URI일 수 있고, Android에서는 `content://` URI가 들어올 수 있으므로 앱 Documents/attachments에 `file://` URI로 복사한 뒤 그 URI를 저장한다.
 - 파일명은 경로 구분자를 제거하고 허용 문자만 남겨 destination path traversal과 충돌 가능성을 줄인다. 원래 파일명, MIME type, 크기, 확장자는 SQLite에 넣을 메타데이터로 정규화한다.
 - 선택 취소는 기존 작성 상태를 바꾸지 않으며, 원본 URI 누락과 복사 실패는 파일 저장 기능의 오류 상태로 사용자에게 설명한다.
+
+## Issue #11 — 기록 첨부파일 통합과 삭제 정합성
+
+### 배운 내용
+
+- 작성 화면의 첨부 상태를 단일 이미지가 아니라 `StoredAttachment[]`로 두면 사진과 문서를 같은 저장·표시 흐름으로 다룰 수 있다.
+- 기록 생성과 attachment metadata INSERT는 SQLite transaction으로 묶어 부분 저장을 막고, transaction 실패 시 아직 DB에 연결되지 않은 앱 파일을 정리한다.
+- 파일 시스템은 DB처럼 transaction을 제공하지 않으므로 기록 삭제는 연결된 파일을 먼저 삭제하고, 모든 파일 정리가 끝난 뒤 `ON DELETE CASCADE`로 SQLite 메타데이터를 삭제한다. 일부 파일 삭제가 실패하면 DB 삭제를 보류하고 사용자에게 재시도를 안내한다.
+- DB에 URI가 남아 있어도 실제 파일은 수동 삭제나 OS 상태 변화로 사라질 수 있다. 상세 화면은 파일 존재 여부를 확인하고 복구 불가 상태와 재첨부 안내를 표시한다.

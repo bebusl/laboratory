@@ -69,6 +69,16 @@ export async function storeAttachment(source: AttachmentSource): Promise<StoredA
   }
 }
 
+export function deleteStoredAttachment(uri: string) {
+  const file = new File(uri);
+
+  if (!file.exists) {
+    return;
+  }
+
+  file.delete();
+}
+
 export function extensionFromName(name: string) {
   const lastSegment = name.split(/[\\/]/).pop() || '';
   const dotIndex = lastSegment.lastIndexOf('.');

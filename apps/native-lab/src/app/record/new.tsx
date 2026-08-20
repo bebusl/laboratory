@@ -14,6 +14,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import type { StoredAttachment } from '@/features/attachments/types';
+import { deleteStoredAttachment } from '@/features/attachments/file-storage';
 import { ImageAttachmentPicker } from '@/features/media/image-attachment-picker';
 import { useRecords } from '@/features/records/record-context';
 
@@ -22,7 +23,7 @@ export default function NewRecordScreen() {
   const { createRecord } = useRecords();
   const [title, setTitle] = useState('');
   const [memo, setMemo] = useState('');
-  const [attachment, setAttachment] = useState<StoredAttachment | null>(null);
+  const [attachments, setAttachments] = useState<StoredAttachment[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const isSavingRef = useRef(false);
@@ -49,19 +50,29 @@ export default function NewRecordScreen() {
     isSavingRef.current = true;
     setIsSaving(true);
 
+    let record;
+
     try {
-      const record = await createRecord({
-        attachment,
+      record = await createRecord({
+        attachments,
         title: normalizedTitle,
         memo: memo.trim(),
       });
       if (!isActiveRef.current) return;
       router.replace({ pathname: '/record/[id]', params: { id: record.id } });
     } catch {
+      for (const attachment of attachments) {
+        try {
+          deleteStoredAttachment(attachment.uri);
+        } catch {
+          // Keep the original save error visible. The next cleanup pass can handle the file.
+        }
+      }
       if (!isActiveRef.current) return;
       isSavingRef.current = false;
       setError('기록을 저장하지 못했습니다. 잠시 후 다시 시도해 주세요.');
       setIsSaving(false);
+      return;
     }
   };
 
@@ -103,7 +114,7 @@ export default function NewRecordScreen() {
               />
             </View>
 
-            <ImageAttachmentPicker onChange={setAttachment} value={attachment} />
+            <ImageAttachmentPicker onChange={setAttachments} value={attachments} />
 
             <View style={styles.field}>
               <Text style={styles.label}>메모</Text>

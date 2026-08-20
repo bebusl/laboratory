@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { pickAndStoreDocument } from '@/features/attachments/document-picker';
-import { storeAttachment } from '@/features/attachments/file-storage';
+import { deleteStoredAttachment, storeAttachment } from '@/features/attachments/file-storage';
+import { AttachmentCard } from '@/features/attachments/attachment-card';
 import type { StoredAttachment } from '@/features/attachments/types';
 import {
   captureImage,
@@ -11,8 +12,8 @@ import {
 } from '@/features/media/image-picker';
 
 interface ImageAttachmentPickerProps {
-  value: StoredAttachment | null;
-  onChange: (attachment: StoredAttachment | null) => void;
+  value: StoredAttachment[];
+  onChange: (attachments: StoredAttachment[]) => void;
 }
 
 export function ImageAttachmentPicker({ value, onChange }: ImageAttachmentPickerProps) {
@@ -25,16 +26,19 @@ export function ImageAttachmentPicker({ value, onChange }: ImageAttachmentPicker
 
     const result = kind === 'camera' ? await captureImage() : await pickImageFromLibrary();
 
-    setIsPicking(false);
-
     if ('image' in result) {
       try {
-        onChange(await storeAttachment(toAttachmentSource(result.image)));
+        const attachment = await storeAttachment(toAttachmentSource(result.image));
+        onChange([...value, attachment]);
       } catch (cause: unknown) {
         setError(toStorageMessage(cause));
+      } finally {
+        setIsPicking(false);
       }
       return;
     }
+
+    setIsPicking(false);
 
     if ('failure' in result) {
       setError(result.failure.message);
@@ -50,12 +54,26 @@ export function ImageAttachmentPicker({ value, onChange }: ImageAttachmentPicker
     setIsPicking(false);
 
     if ('attachment' in result) {
-      onChange(result.attachment);
+      onChange([...value, result.attachment]);
       return;
     }
 
     if ('failure' in result) {
       setError(result.failure.message);
+    }
+  };
+
+  const removeAttachment = async (attachment: StoredAttachment) => {
+    setIsPicking(true);
+    setError(null);
+
+    try {
+      deleteStoredAttachment(attachment.uri);
+      onChange(value.filter(current => current.uri !== attachment.uri));
+    } catch {
+      setError('첨부파일을 제거하지 못했습니다. 잠시 후 다시 시도해 주세요.');
+    } finally {
+      setIsPicking(false);
     }
   };
 
@@ -75,32 +93,13 @@ export function ImageAttachmentPicker({ value, onChange }: ImageAttachmentPicker
   return (
     <View style={styles.container}>
       <Text style={styles.label}>파일 첨부</Text>
-      {value ? (
-        <View style={styles.previewCard}>
-          <Image
-            accessibilityLabel={`${value.name} 미리보기`}
-            source={{ uri: value.uri }}
-            style={styles.preview}
-          />
-          <View style={styles.previewInfo}>
-            <Text numberOfLines={1} style={styles.fileName}>
-              {value.name}
-            </Text>
-            <Text style={styles.metadata}>
-              {value.mimeType || 'MIME type 확인 전'} · {formatSize(value.size)} ·{' '}
-              {value.uri.startsWith('file://') ? '앱 전용 저장됨' : '저장 위치 확인 전'}
-            </Text>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="선택한 첨부파일 제거"
-              onPress={() => onChange(null)}
-              style={styles.removeButton}
-            >
-              <Text style={styles.removeLabel}>첨부파일 제거</Text>
-            </Pressable>
-          </View>
-        </View>
-      ) : null}
+      {value.map(attachment => (
+        <AttachmentCard
+          attachment={attachment}
+          key={attachment.uri}
+          onRemove={() => void removeAttachment(attachment)}
+        />
+      ))}
 
       <View style={styles.actions}>
         <Pressable
@@ -140,29 +139,9 @@ export function ImageAttachmentPicker({ value, onChange }: ImageAttachmentPicker
   );
 }
 
-function formatSize(size: number | null) {
-  if (size === null) return '크기 확인 전';
-  if (size < 1024) return `${size} B`;
-  if (size < 1024 * 1024) return `${Math.round(size / 1024)} KB`;
-  return `${(size / (1024 * 1024)).toFixed(1)} MB`;
-}
-
 const styles = StyleSheet.create({
   container: { gap: 10 },
   label: { color: '#17202d', fontSize: 14, fontWeight: '700' },
-  previewCard: {
-    flexDirection: 'row',
-    gap: 12,
-    borderRadius: 12,
-    backgroundColor: '#ffffff',
-    padding: 10,
-  },
-  preview: { width: 84, height: 84, borderRadius: 8, backgroundColor: '#e9eef5' },
-  previewInfo: { flex: 1, justifyContent: 'center', gap: 5 },
-  fileName: { color: '#17202d', fontSize: 14, fontWeight: '600' },
-  metadata: { color: '#637083', fontSize: 12 },
-  removeButton: { alignSelf: 'flex-start', paddingVertical: 3 },
-  removeLabel: { color: '#b42318', fontSize: 12, fontWeight: '700' },
   actions: { flexDirection: 'row', gap: 10 },
   actionButton: {
     flex: 1,
