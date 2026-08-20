@@ -1,4 +1,4 @@
-const _buffer = require("./buffer");
+const _buffer = require('./buffer');
 
 const buffer = _buffer();
 

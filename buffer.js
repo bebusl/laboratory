@@ -37,10 +37,7 @@ const buffered = () => {
 
     const curSize = inputSizes.shift();
     const interval = 1000 / curSize;
-    let count = 0;
-
     const processChunk = () => {
-      //   if (!isStreaming || count >= curSize || buffer.length === 0) {
       if (!isStreaming || buffer.length === 0) {
         // 다음 chunk로
         streamNextChunk();
@@ -48,7 +45,6 @@ const buffered = () => {
       }
 
       console.log(buffer.shift());
-      count++;
       setTimeout(processChunk, interval);
     };
 
@@ -58,11 +54,11 @@ const buffered = () => {
   return {
     getBuffer: () => buffer,
     getInputSizes: () => inputSizes,
-    push: (input) => {
+    push: input => {
       if (Array.isArray(input)) {
-        input.forEach((item) => {
+        input.forEach(item => {
           if (bufferLog.has(item)) {
-            console.warn("중복된 아이템이 버퍼에 쌓였음 :: ", item);
+            console.warn('중복된 아이템이 버퍼에 쌓였음 :: ', item);
             bufferLog.add(item);
           }
         });
