@@ -15,3 +15,4 @@
 - 문서 선택과 앱 전용 Documents/attachments 파일 저장
 - 이미지·문서 첨부파일의 공통 메타데이터 정규화 및 SQLite 저장 함수
 - 기록별 복수 첨부파일 표시와 파일·SQLite 삭제 정합성 처리
+- 첨부파일별 iOS·Android OS 공유 시트 연결

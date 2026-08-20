@@ -1,14 +1,17 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useState } from 'react';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useRecords } from '@/features/records/record-context';
 import { AttachmentCard } from '@/features/attachments/attachment-card';
+import { shareAttachment } from '@/features/attachments/share-attachment';
 import { useRecordAttachments } from '@/features/records/record-attachments';
 
 export default function RecordDetailScreen() {
   const router = useRouter();
+  const [sharingAttachmentId, setSharingAttachmentId] = useState<string | null>(null);
+  const [sharingError, setSharingError] = useState<string | null>(null);
   const { id } = useLocalSearchParams<{ id: string }>();
   const { deleteRecord, error, getRecord, isLoading } = useRecords();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -90,9 +93,25 @@ export default function RecordDetailScreen() {
             <Text style={styles.placeholderDescription}>첨부한 사진이나 문서가 없습니다.</Text>
           ) : (
             attachments.map(attachment => (
-              <AttachmentCard attachment={attachment} key={attachment.id} />
+              <AttachmentCard
+                attachment={attachment}
+                isSharing={sharingAttachmentId === attachment.id}
+                key={attachment.id}
+                onShare={() => {
+                  setSharingAttachmentId(attachment.id);
+                  setSharingError(null);
+                  void shareAttachment(attachment)
+                    .then(result => {
+                      if ('failure' in result) {
+                        setSharingError(result.failure.message);
+                      }
+                    })
+                    .finally(() => setSharingAttachmentId(null));
+                }}
+              />
             ))
           )}
+          {sharingError ? <Text style={styles.errorDescription}>{sharingError}</Text> : null}
         </View>
         <Pressable
           accessibilityRole="button"

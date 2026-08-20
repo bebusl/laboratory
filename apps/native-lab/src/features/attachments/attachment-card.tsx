@@ -7,9 +7,11 @@ import type { StoredAttachment } from '@/features/attachments/types';
 interface AttachmentCardProps {
   attachment: StoredAttachment;
   onRemove?: () => void;
+  onShare?: () => void;
+  isSharing?: boolean;
 }
 
-export function AttachmentCard({ attachment, onRemove }: AttachmentCardProps) {
+export function AttachmentCard({ attachment, isSharing, onRemove, onShare }: AttachmentCardProps) {
   const isAvailable = getAvailability(attachment.uri);
 
   return (
@@ -49,15 +51,30 @@ export function AttachmentCard({ attachment, onRemove }: AttachmentCardProps) {
         {!isAvailable ? (
           <Text style={styles.missing}>파일이 사라졌습니다. 원본을 다시 첨부해 주세요.</Text>
         ) : null}
-        {onRemove ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={`${attachment.name} 첨부파일 제거`}
-            onPress={onRemove}
-            style={styles.removeButton}
-          >
-            <Text style={styles.removeLabel}>첨부파일 제거</Text>
-          </Pressable>
+        {onShare || onRemove ? (
+          <View style={styles.actions}>
+            {onShare ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={`${attachment.name} 공유`}
+                disabled={isSharing}
+                onPress={onShare}
+                style={styles.actionButton}
+              >
+                <Text style={styles.actionLabel}>{isSharing ? '공유 중…' : '공유'}</Text>
+              </Pressable>
+            ) : null}
+            {onRemove ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={`${attachment.name} 첨부파일 제거`}
+                onPress={onRemove}
+                style={styles.removeButton}
+              >
+                <Text style={styles.removeLabel}>첨부파일 제거</Text>
+              </Pressable>
+            ) : null}
+          </View>
         ) : null}
       </View>
     </View>
@@ -104,4 +121,7 @@ const styles = StyleSheet.create({
   missing: { color: '#b42318', fontSize: 12, lineHeight: 17 },
   removeButton: { alignSelf: 'flex-start', paddingVertical: 3 },
   removeLabel: { color: '#b42318', fontSize: 12, fontWeight: '700' },
+  actions: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  actionButton: { alignSelf: 'flex-start', paddingVertical: 3 },
+  actionLabel: { color: '#1769e0', fontSize: 12, fontWeight: '700' },
 });

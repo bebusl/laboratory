@@ -80,3 +80,12 @@ pnpm --filter native-lab test
 - 기록 생성과 attachment metadata INSERT는 SQLite transaction으로 묶어 부분 저장을 막고, transaction 실패 시 아직 DB에 연결되지 않은 앱 파일을 정리한다.
 - 파일 시스템은 DB처럼 transaction을 제공하지 않으므로 기록 삭제는 연결된 파일을 먼저 삭제하고, 모든 파일 정리가 끝난 뒤 `ON DELETE CASCADE`로 SQLite 메타데이터를 삭제한다. 일부 파일 삭제가 실패하면 DB 삭제를 보류하고 사용자에게 재시도를 안내한다.
 - DB에 URI가 남아 있어도 실제 파일은 수동 삭제나 OS 상태 변화로 사라질 수 있다. 상세 화면은 파일 존재 여부를 확인하고 복구 불가 상태와 재첨부 안내를 표시한다.
+
+## Issue #12 — 첨부파일 OS 공유 시트
+
+### 배운 내용
+
+- `expo-sharing`은 `isAvailableAsync()`로 공유 API 사용 가능 여부를 먼저 확인한 뒤 `shareAsync(uri, options)`를 호출한다.
+- Android는 Intent에 MIME type과 대화상자 제목을 전달하고, iOS는 UTI를 전달하므로 공통 URI 외의 공유 옵션은 플랫폼별로 분기한다.
+- 공유 API의 `void` 결과는 사용자가 시트를 닫았는지와 실제 대상 앱이 파일을 처리했는지를 구분하지 않는다. 이 단계에서는 공유 시트 호출 성공과 API 실패·파일 누락만 앱 상태로 구분한다.
+- 공유 불가 환경, 파일 누락, 공유 시트 실행 실패를 첨부파일 단위 오류로 표시해 기록 전체 화면의 오류로 확산하지 않는다.
