@@ -17,3 +17,4 @@
 - 기록별 복수 첨부파일 표시와 파일·SQLite 삭제 정합성 처리
 - 첨부파일별 iOS·Android OS 공유 시트 연결
 - `nativelab://record/{id}` 초기·실행 중 딥링크 처리
+- 보조 WebView 화면과 RN↔웹 typed Bridge

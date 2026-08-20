@@ -44,6 +44,14 @@ export default function HomeScreen() {
                 <Text style={styles.buttonLabel}>새 기록 만들기</Text>
               </Pressable>
             ) : null}
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="보조 WebView 학습 화면 열기"
+              onPress={() => router.push('/webview')}
+              style={styles.secondaryButton}
+            >
+              <Text style={styles.secondaryButtonLabel}>보조 WebView 열기</Text>
+            </Pressable>
           </View>
         }
         renderItem={({ item }) => (
@@ -179,6 +187,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   secondaryButton: {
+    alignSelf: 'flex-start',
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#b8c4d2',

@@ -99,3 +99,14 @@ pnpm --filter native-lab test
 - `nativelab://record/{id}`는 URL parser에서 hostname과 path로 나뉠 수 있으므로 두 값을 조합해 route를 해석하고, scheme·세그먼트 수·record ID 문자를 검증한다.
 - DB 로딩이 끝난 뒤 기록 존재 여부를 확인하고 `router.replace`로 이동해 중복 딥링크 이벤트가 navigation stack을 여러 번 쌓지 않게 한다.
 - 잘못된 scheme/경로와 존재하지 않는 기록은 Alert 후 목록으로 복귀시켜 앱이 빈 상세 화면에 머물지 않게 한다.
+
+## Issue #14 — 보조 WebView와 typed Bridge
+
+### 배운 내용
+
+- `react-native-webview`는 Expo SDK 57에서 별도 native module로 설치하며, WebView는 기록 앱의 메인 콘텐츠가 아니라 `/webview` 보조 route에 격리했다.
+- Web → RN은 `window.ReactNativeWebView.postMessage(JSON.stringify(message))`, RN → Web은 `injectJavaScript`로 연결한다. postMessage는 문자열만 받으므로 JSON 직렬화가 필요하다.
+- Bridge 타입은 `web_ready`, `request_record_count`, `record_count`, `native_error`처럼 명시적인 `type`과 payload를 갖고, RN은 JSON 파싱 후 payload shape를 검증해 알 수 없는 메시지를 무시한다.
+- `originWhitelist`와 `onShouldStartLoadWithRequest`를 함께 사용해 `about:blank`, Expo 문서, React Native 문서만 WebView 안에서 허용하고 다른 링크는 차단한다.
+- WebView 로딩 시작·완료·오류를 별도 상태로 관리하고, 오류 화면에서 다시 시도할 수 있게 한다.
+- iOS ATS와 Android cleartext 정책 때문에 원격 HTTP 콘텐츠를 운영 수준에서 사용하려면 별도 native 설정이 필요하다. 이번 학습 화면은 inline HTML과 HTTPS allowlist만 사용한다.
