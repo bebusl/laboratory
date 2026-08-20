@@ -1,0 +1,15 @@
+node_modules/
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native build output
+ios/
+android/
+
+# Local environment files
+.env*.local
+
+# TypeScript cache
+*.tsbuildinfo
