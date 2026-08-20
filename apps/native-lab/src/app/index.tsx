@@ -6,7 +6,7 @@ import { useRecords } from '@/features/records/record-context';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { records } = useRecords();
+  const { error, isLoading, records, retry } = useRecords();
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -14,7 +14,19 @@ export default function HomeScreen() {
         contentContainerStyle={styles.listContent}
         data={records}
         keyExtractor={record => record.id}
-        ListEmptyComponent={<EmptyState onCreate={() => router.push('/record/new')} />}
+        ListEmptyComponent={
+          isLoading ? (
+            <StatusState message="기록을 불러오는 중입니다." />
+          ) : error ? (
+            <StatusState
+              actionLabel="다시 시도"
+              message="기록을 불러오지 못했습니다."
+              onAction={retry}
+            />
+          ) : (
+            <EmptyState onCreate={() => router.push('/record/new')} />
+          )
+        }
         ListHeaderComponent={
           <View style={styles.header}>
             <Text style={styles.eyebrow}>NATIVE LAB</Text>
@@ -71,6 +83,32 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
   );
 }
 
+function StatusState({
+  actionLabel,
+  message,
+  onAction,
+}: {
+  actionLabel?: string;
+  message: string;
+  onAction?: () => void;
+}) {
+  return (
+    <View style={styles.statusState}>
+      <Text style={styles.emptyDescription}>{message}</Text>
+      {actionLabel && onAction ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={actionLabel}
+          onPress={onAction}
+          style={styles.secondaryButton}
+        >
+          <Text style={styles.secondaryButtonLabel}>{actionLabel}</Text>
+        </Pressable>
+      ) : null}
+    </View>
+  );
+}
+
 function formatDate(value: string) {
   return new Intl.DateTimeFormat('ko-KR', {
     dateStyle: 'medium',
@@ -115,6 +153,12 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingBottom: 80,
   },
+  statusState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+    paddingVertical: 80,
+  },
   emptyTitle: {
     color: '#17202d',
     fontSize: 20,
@@ -133,6 +177,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#1769e0',
     paddingHorizontal: 20,
     paddingVertical: 14,
+  },
+  secondaryButton: {
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#b8c4d2',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  secondaryButtonLabel: {
+    color: '#1769e0',
+    fontSize: 14,
+    fontWeight: '700',
   },
   recordCard: {
     borderRadius: 16,

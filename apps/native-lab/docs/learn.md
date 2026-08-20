@@ -40,3 +40,13 @@ pnpm --filter native-lab test
 - 작성 중 취소
 - 작성 완료 후 상세 이동
 - 존재하지 않는 기록 ID로 상세 진입
+
+## Issue #8 — SQLite 기록 저장소
+
+### 배운 내용
+
+- Expo SDK 57의 `SQLiteProvider`에서 `onInit`으로 migration을 실행하고, 하위 화면은 `useSQLiteContext`로 같은 DB 연결을 사용한다.
+- 사용자 입력은 `runAsync`의 bound parameter로 전달하고, 여러 SQL 정의를 한 번에 실행하는 `execAsync`에는 사용자 값을 넣지 않는다.
+- `records`와 `attachments`를 외래 키로 연결하고 `ON DELETE CASCADE`를 설정해 이후 파일 메타데이터 정리 흐름을 준비했다.
+- 화면 Context는 DB를 대체하는 저장소가 아니라 로딩·오류·화면 갱신을 담당하는 얇은 경계로 남겼다.
+- `native-lab.db`는 앱 전용 데이터베이스 파일이므로 앱 재실행 후에도 기록이 유지된다.
