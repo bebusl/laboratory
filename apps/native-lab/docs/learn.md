@@ -59,4 +59,15 @@ pnpm --filter native-lab test
 - 권한 요청 전에 앱 기능에서 권한이 필요한 이유를 설명하고, 거부·재요청 가능·영구 거부를 구분해야 한다.
 - iOS의 제한된 사진 접근은 오류가 아니라 `accessPrivileges: 'limited'`인 정상적인 접근 상태로 다룬다.
 - 선택 결과의 URI는 즉시 사용할 수 있지만 영구 경로라고 가정하지 않고, 파일명·MIME type·크기를 별도 메타데이터로 정규화한다.
-- 실제 앱 전용 파일 복사와 SQLite attachment 저장은 다음 Issue에서 연결한다.
+- 실제 앱 전용 파일 복사와 SQLite attachment 저장은 기록 생성 트랜잭션에서 연결하고, 목록 표시와 삭제 정합성은 다음 Issue에서 다룬다.
+
+## Issue #10 — 문서 선택과 앱 전용 파일 저장
+
+### 배운 내용
+
+- `expo-document-picker`는 `copyToCacheDirectory: true`로 선택 직후 Expo FileSystem이 읽을 수 있는 임시 복사본을 제공한다. 이 복사본도 영구 저장 위치로 가정하지 않고 Documents 하위로 한 번 더 복사한다.
+- 최신 Expo FileSystem은 legacy `copyAsync`, `makeDirectoryAsync` 대신 `File`, `Directory`, `Paths` 객체의 `copy`, `create`, `info` API를 사용한다.
+- 파일 내용 전체를 base64나 `ArrayBuffer`로 JS 메모리에 올리지 않고 네이티브 파일 복사 API를 호출하면 큰 파일의 메모리 사용을 줄일 수 있다.
+- iOS에서 선택 결과는 sandbox 밖의 원본 경로가 아니라 접근 가능한 임시 URI일 수 있고, Android에서는 `content://` URI가 들어올 수 있으므로 앱 Documents/attachments에 `file://` URI로 복사한 뒤 그 URI를 저장한다.
+- 파일명은 경로 구분자를 제거하고 허용 문자만 남겨 destination path traversal과 충돌 가능성을 줄인다. 원래 파일명, MIME type, 크기, 확장자는 SQLite에 넣을 메타데이터로 정규화한다.
+- 선택 취소는 기존 작성 상태를 바꾸지 않으며, 원본 URI 누락과 복사 실패는 파일 저장 기능의 오류 상태로 사용자에게 설명한다.

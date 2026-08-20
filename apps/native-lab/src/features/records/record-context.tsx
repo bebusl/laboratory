@@ -2,18 +2,22 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react';
 
 import {
+  insertAttachment,
   insertRecord,
   listRecords,
   removeRecord,
   updateRecord as persistRecordUpdate,
   type FieldRecord,
 } from '@/database/records';
+import type { StoredAttachment } from '@/features/attachments/types';
 
 interface RecordContextValue {
   records: FieldRecord[];
   isLoading: boolean;
   error: Error | null;
-  createRecord: (input: Pick<FieldRecord, 'title' | 'memo'>) => Promise<FieldRecord>;
+  createRecord: (
+    input: Pick<FieldRecord, 'title' | 'memo'> & { attachment?: StoredAttachment | null }
+  ) => Promise<FieldRecord>;
   getRecord: (id: string) => FieldRecord | undefined;
   updateRecord: (record: FieldRecord) => Promise<void>;
   deleteRecord: (id: string) => Promise<void>;
@@ -59,7 +63,7 @@ export function RecordProvider({ children }: PropsWithChildren) {
       records,
       isLoading,
       error,
-      createRecord: async ({ title, memo }) => {
+      createRecord: async ({ attachment, title, memo }) => {
         const now = new Date().toISOString();
         const record: FieldRecord = {
           id: createRecordId(),
@@ -69,7 +73,13 @@ export function RecordProvider({ children }: PropsWithChildren) {
           updatedAt: now,
         };
 
-        await insertRecord(db, record);
+        await db.withTransactionAsync(async () => {
+          await insertRecord(db, record);
+
+          if (attachment) {
+            await insertAttachment(db, record.id, attachment);
+          }
+        });
         setRecords(current => [record, ...current]);
         return record;
       },

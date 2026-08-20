@@ -13,8 +13,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import type { StoredAttachment } from '@/features/attachments/types';
 import { ImageAttachmentPicker } from '@/features/media/image-attachment-picker';
-import type { SelectedImage } from '@/features/media/image-picker';
 import { useRecords } from '@/features/records/record-context';
 
 export default function NewRecordScreen() {
@@ -22,7 +22,7 @@ export default function NewRecordScreen() {
   const { createRecord } = useRecords();
   const [title, setTitle] = useState('');
   const [memo, setMemo] = useState('');
-  const [image, setImage] = useState<SelectedImage | null>(null);
+  const [attachment, setAttachment] = useState<StoredAttachment | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const isSavingRef = useRef(false);
@@ -50,7 +50,11 @@ export default function NewRecordScreen() {
     setIsSaving(true);
 
     try {
-      const record = await createRecord({ title: normalizedTitle, memo: memo.trim() });
+      const record = await createRecord({
+        attachment,
+        title: normalizedTitle,
+        memo: memo.trim(),
+      });
       if (!isActiveRef.current) return;
       router.replace({ pathname: '/record/[id]', params: { id: record.id } });
     } catch {
@@ -99,7 +103,7 @@ export default function NewRecordScreen() {
               />
             </View>
 
-            <ImageAttachmentPicker onChange={setImage} value={image} />
+            <ImageAttachmentPicker onChange={setAttachment} value={attachment} />
 
             <View style={styles.field}>
               <Text style={styles.label}>메모</Text>

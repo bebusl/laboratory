@@ -1,15 +1,18 @@
 import { useState } from 'react';
 import { Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { pickAndStoreDocument } from '@/features/attachments/document-picker';
+import { storeAttachment } from '@/features/attachments/file-storage';
+import type { StoredAttachment } from '@/features/attachments/types';
 import {
   captureImage,
   pickImageFromLibrary,
-  type SelectedImage,
+  toAttachmentSource,
 } from '@/features/media/image-picker';
 
 interface ImageAttachmentPickerProps {
-  value: SelectedImage | null;
-  onChange: (image: SelectedImage | null) => void;
+  value: StoredAttachment | null;
+  onChange: (attachment: StoredAttachment | null) => void;
 }
 
 export function ImageAttachmentPicker({ value, onChange }: ImageAttachmentPickerProps) {
@@ -25,7 +28,29 @@ export function ImageAttachmentPicker({ value, onChange }: ImageAttachmentPicker
     setIsPicking(false);
 
     if ('image' in result) {
-      onChange(result.image);
+      try {
+        onChange(await storeAttachment(toAttachmentSource(result.image)));
+      } catch (cause: unknown) {
+        setError(toStorageMessage(cause));
+      }
+      return;
+    }
+
+    if ('failure' in result) {
+      setError(result.failure.message);
+    }
+  };
+
+  const runDocumentPicker = async () => {
+    setIsPicking(true);
+    setError(null);
+
+    const result = await pickAndStoreDocument();
+
+    setIsPicking(false);
+
+    if ('attachment' in result) {
+      onChange(result.attachment);
       return;
     }
 
@@ -49,7 +74,7 @@ export function ImageAttachmentPicker({ value, onChange }: ImageAttachmentPicker
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>사진 첨부</Text>
+      <Text style={styles.label}>파일 첨부</Text>
       {value ? (
         <View style={styles.previewCard}>
           <Image
@@ -62,15 +87,16 @@ export function ImageAttachmentPicker({ value, onChange }: ImageAttachmentPicker
               {value.name}
             </Text>
             <Text style={styles.metadata}>
-              {value.mimeType || 'MIME type 확인 전'} · {formatSize(value.size)}
+              {value.mimeType || 'MIME type 확인 전'} · {formatSize(value.size)} ·{' '}
+              {value.uri.startsWith('file://') ? '앱 전용 저장됨' : '저장 위치 확인 전'}
             </Text>
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="선택한 사진 제거"
+              accessibilityLabel="선택한 첨부파일 제거"
               onPress={() => onChange(null)}
               style={styles.removeButton}
             >
-              <Text style={styles.removeLabel}>사진 제거</Text>
+              <Text style={styles.removeLabel}>첨부파일 제거</Text>
             </Pressable>
           </View>
         </View>
@@ -95,11 +121,20 @@ export function ImageAttachmentPicker({ value, onChange }: ImageAttachmentPicker
         >
           <Text style={styles.actionLabel}>카메라 촬영</Text>
         </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="문서 파일 선택"
+          disabled={isPicking}
+          onPress={() => void runDocumentPicker()}
+          style={({ pressed }) => [styles.actionButton, pressed && styles.pressed]}
+        >
+          <Text style={styles.actionLabel}>문서 선택</Text>
+        </Pressable>
       </View>
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Text style={styles.hint}>
-        사진 선택 결과는 다음 단계에서 앱 전용 저장 공간으로 복사합니다.
+        선택한 파일은 앱 Documents/attachments에 한 번만 복사하며, 원본 메모리를 읽지 않습니다.
       </Text>
     </View>
   );
@@ -142,3 +177,9 @@ const styles = StyleSheet.create({
   hint: { color: '#8b96a5', fontSize: 12, lineHeight: 18 },
   pressed: { opacity: 0.72 },
 });
+
+function toStorageMessage(cause: unknown) {
+  return cause instanceof Error
+    ? cause.message
+    : '파일을 앱 전용 저장 공간에 보관하지 못했습니다. 다시 시도해 주세요.';
+}

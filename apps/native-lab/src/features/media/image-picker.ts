@@ -1,5 +1,8 @@
 import * as ImagePicker from 'expo-image-picker';
 
+import { extensionFromName } from '@/features/attachments/file-storage';
+import type { AttachmentSource } from '@/features/attachments/types';
+
 export interface SelectedImage {
   uri: string;
   name: string;
@@ -8,6 +11,17 @@ export interface SelectedImage {
   width: number;
   height: number;
   source: 'camera' | 'library';
+}
+
+export function toAttachmentSource(image: SelectedImage): AttachmentSource {
+  return {
+    extension: extensionFromName(image.name),
+    kind: 'image',
+    mimeType: image.mimeType,
+    name: image.name,
+    size: image.size,
+    uri: image.uri,
+  };
 }
 
 export type ImagePickerFailure =
