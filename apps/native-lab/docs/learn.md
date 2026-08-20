@@ -50,3 +50,13 @@ pnpm --filter native-lab test
 - `records`와 `attachments`를 외래 키로 연결하고 `ON DELETE CASCADE`를 설정해 이후 파일 메타데이터 정리 흐름을 준비했다.
 - 화면 Context는 DB를 대체하는 저장소가 아니라 로딩·오류·화면 갱신을 담당하는 얇은 경계로 남겼다.
 - `native-lab.db`는 앱 전용 데이터베이스 파일이므로 앱 재실행 후에도 기록이 유지된다.
+
+## Issue #9 — 카메라와 사진 보관함
+
+### 배운 내용
+
+- `expo-image-picker`의 `launchCameraAsync`와 `launchImageLibraryAsync`는 모두 `{ canceled, assets }` 결과를 반환한다.
+- 권한 요청 전에 앱 기능에서 권한이 필요한 이유를 설명하고, 거부·재요청 가능·영구 거부를 구분해야 한다.
+- iOS의 제한된 사진 접근은 오류가 아니라 `accessPrivileges: 'limited'`인 정상적인 접근 상태로 다룬다.
+- 선택 결과의 URI는 즉시 사용할 수 있지만 영구 경로라고 가정하지 않고, 파일명·MIME type·크기를 별도 메타데이터로 정규화한다.
+- 실제 앱 전용 파일 복사와 SQLite attachment 저장은 다음 Issue에서 연결한다.

@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { ImageAttachmentPicker } from '@/features/media/image-attachment-picker';
+import type { SelectedImage } from '@/features/media/image-picker';
 import { useRecords } from '@/features/records/record-context';
 
 export default function NewRecordScreen() {
@@ -20,6 +22,7 @@ export default function NewRecordScreen() {
   const { createRecord } = useRecords();
   const [title, setTitle] = useState('');
   const [memo, setMemo] = useState('');
+  const [image, setImage] = useState<SelectedImage | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const isSavingRef = useRef(false);
@@ -95,6 +98,8 @@ export default function NewRecordScreen() {
                 value={title}
               />
             </View>
+
+            <ImageAttachmentPicker onChange={setImage} value={image} />
 
             <View style={styles.field}>
               <Text style={styles.label}>메모</Text>
