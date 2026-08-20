@@ -124,7 +124,10 @@
   color: $color-text-primary;
   background-color: transparent;
   border: 1px solid $color-border-default;
-  transition: color $transition-fast, background-color $transition-fast, border-color $transition-fast;
+  transition:
+    color $transition-fast,
+    background-color $transition-fast,
+    border-color $transition-fast;
   outline: none;
   appearance: none;
 
