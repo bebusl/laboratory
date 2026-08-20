@@ -18,3 +18,5 @@
 - 첨부파일별 iOS·Android OS 공유 시트 연결
 - `nativelab://record/{id}` 초기·실행 중 딥링크 처리
 - 보조 WebView 화면과 RN↔웹 typed Bridge
+- 권한·파일·WebView 오류 상태와 VoiceOver/TalkBack 안내 보강
+- iOS/Android 네이티브 검증 절차와 플랫폼 차이 문서화

@@ -1,6 +1,7 @@
 import * as DocumentPicker from 'expo-document-picker';
 
 import {
+  AttachmentStorageError,
   extensionFromName,
   storeAttachment,
   type AttachmentStorageFailureKind,
@@ -53,8 +54,5 @@ export async function pickAndStoreDocument(): Promise<
 function isStorageFailure(cause: unknown): cause is Error & {
   kind: AttachmentStorageFailureKind;
 } {
-  return (
-    cause instanceof Error &&
-    (cause as Error & { kind?: AttachmentStorageFailureKind }).kind !== undefined
-  );
+  return cause instanceof AttachmentStorageError;
 }

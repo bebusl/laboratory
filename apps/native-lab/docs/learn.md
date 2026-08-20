@@ -110,3 +110,35 @@ pnpm --filter native-lab test
 - `originWhitelist`와 `onShouldStartLoadWithRequest`를 함께 사용해 `about:blank`, Expo 문서, React Native 문서만 WebView 안에서 허용하고 다른 링크는 차단한다.
 - WebView 로딩 시작·완료·오류를 별도 상태로 관리하고, 오류 화면에서 다시 시도할 수 있게 한다.
 - iOS ATS와 Android cleartext 정책 때문에 원격 HTTP 콘텐츠를 운영 수준에서 사용하려면 별도 native 설정이 필요하다. 이번 학습 화면은 inline HTML과 HTTPS allowlist만 사용한다.
+
+## Issue #15 — 오류 처리·접근성·iOS/Android 최종 검증
+
+### 확인한 오류 상태
+
+- 카메라·사진 권한 거부, iOS limited 사진 접근, 문서·사진 선택 취소는 현재 작성 중인 첨부 목록을 유지하면서 기능별 안내를 표시한다.
+- 파일 URI 누락·복사 실패·파일 삭제 실패는 파일 저장/삭제 오류로 변환하고, DB 저장 실패는 기록 저장 오류로 표시한다.
+- 기록 삭제는 실제 파일 정리가 끝나기 전 SQLite cascade를 실행하지 않으며, 일부 삭제 실패 시 재시도할 수 있도록 기록을 유지한다.
+- 공유 불가 환경·공유 파일 누락·공유 시트 실행 실패는 첨부파일 단위 오류로 처리한다.
+- WebView 로딩 오류는 재시도 화면을 제공하고, 알 수 없는 Bridge 메시지와 허용되지 않은 navigation은 무시하거나 차단한다.
+
+### 접근성과 플랫폼 확인 포인트
+
+- 주요 버튼은 `accessibilityRole`과 목적을 설명하는 `accessibilityLabel`을 갖고, 제목·메모 입력창과 저장/삭제 오류는 VoiceOver/TalkBack에서 읽을 수 있는 상태로 둔다.
+- iOS는 Safe Area, swipe-back, camera/photo permission purpose, limited photo access, UTI와 sandbox 파일 URI를 확인한다.
+- Android는 system back, keyboard resize, runtime permission, `content://` URI, MIME type과 Intent 공유를 확인한다.
+- WebView는 inline HTML을 사용하므로 iOS ATS와 Android cleartext 설정을 건드리지 않는다. 원격 링크는 HTTPS allowlist만 허용한다.
+
+### 최종 검증 명령
+
+```bash
+pnpm --filter native-lab lint
+pnpm --filter native-lab check-types
+pnpm --filter native-lab test
+pnpm --filter native-lab build
+pnpm lint
+pnpm check-types
+pnpm test
+pnpm format:check
+```
+
+네이티브 export는 iOS와 Android 모두 완료되었고, 실제 권한·카메라·공유·딥링크는 README의 시뮬레이터/실기기 명령으로 플랫폼별 확인한다.

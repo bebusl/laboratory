@@ -131,7 +131,11 @@ export function ImageAttachmentPicker({ value, onChange }: ImageAttachmentPicker
         </Pressable>
       </View>
 
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+      {error ? (
+        <Text accessibilityRole="alert" style={styles.error}>
+          {error}
+        </Text>
+      ) : null}
       <Text style={styles.hint}>
         선택한 파일은 앱 Documents/attachments에 한 번만 복사하며, 원본 메모리를 읽지 않습니다.
       </Text>

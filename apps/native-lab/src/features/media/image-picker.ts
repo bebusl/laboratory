@@ -31,20 +31,20 @@ export type ImagePickerFailure =
 export async function captureImage(): Promise<
   { image: SelectedImage } | { canceled: true } | { failure: ImagePickerFailure }
 > {
-  const permission = await ImagePicker.requestCameraPermissionsAsync();
-
-  if (!permission.granted) {
-    return {
-      failure: {
-        kind: 'permission-denied',
-        message: permission.canAskAgain
-          ? '카메라 권한을 허용해야 사진을 촬영할 수 있습니다.'
-          : '카메라 권한이 거부되었습니다. 기기 설정에서 권한을 허용해 주세요.',
-      },
-    };
-  }
-
   try {
+    const permission = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (!permission.granted) {
+      return {
+        failure: {
+          kind: 'permission-denied',
+          message: permission.canAskAgain
+            ? '카메라 권한을 허용해야 사진을 촬영할 수 있습니다.'
+            : '카메라 권한이 거부되었습니다. 기기 설정에서 권한을 허용해 주세요.',
+        },
+      };
+    }
+
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: false,
       mediaTypes: ['images'],
@@ -64,23 +64,23 @@ export async function captureImage(): Promise<
 export async function pickImageFromLibrary(): Promise<
   { image: SelectedImage } | { canceled: true } | { failure: ImagePickerFailure }
 > {
-  const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-  if (!permission.granted) {
-    return {
-      failure: {
-        kind: 'permission-denied',
-        message:
-          permission.accessPrivileges === 'limited'
-            ? '선택된 사진에만 접근할 수 있습니다. 다른 사진을 추가하려면 사진 접근 권한을 변경해 주세요.'
-            : permission.canAskAgain
-              ? '사진 보관함 접근 권한을 허용해야 사진을 선택할 수 있습니다.'
-              : '사진 보관함 권한이 거부되었습니다. 기기 설정에서 권한을 허용해 주세요.',
-      },
-    };
-  }
-
   try {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permission.granted) {
+      return {
+        failure: {
+          kind: 'permission-denied',
+          message:
+            permission.accessPrivileges === 'limited'
+              ? '선택된 사진에만 접근할 수 있습니다. 다른 사진을 추가하려면 사진 접근 권한을 변경해 주세요.'
+              : permission.canAskAgain
+                ? '사진 보관함 접근 권한을 허용해야 사진을 선택할 수 있습니다.'
+                : '사진 보관함 권한이 거부되었습니다. 기기 설정에서 권한을 허용해 주세요.',
+        },
+      };
+    }
+
     const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: false,
       mediaTypes: ['images'],

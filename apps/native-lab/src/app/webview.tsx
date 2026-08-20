@@ -55,7 +55,9 @@ export default function WebViewLearningScreen() {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.centered}>
           <Text style={styles.title}>WebView를 열 수 없습니다</Text>
-          <Text style={styles.description}>{error}</Text>
+          <Text accessibilityRole="alert" style={styles.description}>
+            {error}
+          </Text>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="WebView 다시 시도"

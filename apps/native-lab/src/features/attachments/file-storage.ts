@@ -36,12 +36,13 @@ export async function storeAttachment(source: AttachmentSource): Promise<StoredA
     );
   }
 
-  attachmentDirectory.create({ idempotent: true, intermediates: true });
-
-  const safeName = sanitizeFileName(source.name, source.extension);
-  const destination = new File(attachmentDirectory, `${createStorageId()}-${safeName}`);
+  let destination: File | null = null;
 
   try {
+    attachmentDirectory.create({ idempotent: true, intermediates: true });
+
+    const safeName = sanitizeFileName(source.name, source.extension);
+    destination = new File(attachmentDirectory, `${createStorageId()}-${safeName}`);
     await sourceFile.copy(destination);
     const destinationInfo = destination.info();
 
@@ -58,8 +59,12 @@ export async function storeAttachment(source: AttachmentSource): Promise<StoredA
       uri: destination.uri,
     };
   } catch {
-    if (destination.info().exists) {
-      destination.delete();
+    try {
+      if (destination?.info().exists) {
+        destination.delete();
+      }
+    } catch {
+      // Keep the original copy failure visible. A later cleanup pass can handle the file.
     }
 
     throw new AttachmentStorageError(

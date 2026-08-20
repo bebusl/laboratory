@@ -130,7 +130,11 @@ export default function NewRecordScreen() {
               />
             </View>
 
-            {error ? <Text style={styles.error}>{error}</Text> : null}
+            {error ? (
+              <Text accessibilityRole="alert" style={styles.error}>
+                {error}
+              </Text>
+            ) : null}
 
             <Pressable
               accessibilityRole="button"

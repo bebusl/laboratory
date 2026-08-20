@@ -123,7 +123,11 @@ function EditRecordForm({ record }: { record: FieldRecord }) {
               />
             </View>
 
-            {formError ? <Text style={styles.error}>{formError}</Text> : null}
+            {formError ? (
+              <Text accessibilityRole="alert" style={styles.error}>
+                {formError}
+              </Text>
+            ) : null}
 
             <Pressable
               accessibilityRole="button"
