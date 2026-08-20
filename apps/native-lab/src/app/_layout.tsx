@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { migrateDbIfNeeded } from '@/database/records';
+import { RecordDeepLinkHandler } from '@/features/deeplinks/record-deep-link-handler';
 import { RecordProvider } from '@/features/records/record-context';
 
 export default function RootLayout() {
@@ -34,6 +35,7 @@ export default function RootLayout() {
       onInit={migrateDbIfNeeded}
     >
       <RecordProvider>
+        <RecordDeepLinkHandler />
         <Stack screenOptions={{ headerShown: false }} />
       </RecordProvider>
     </SQLiteProvider>

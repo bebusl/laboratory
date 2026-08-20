@@ -89,3 +89,13 @@ pnpm --filter native-lab test
 - Android는 Intent에 MIME type과 대화상자 제목을 전달하고, iOS는 UTI를 전달하므로 공통 URI 외의 공유 옵션은 플랫폼별로 분기한다.
 - 공유 API의 `void` 결과는 사용자가 시트를 닫았는지와 실제 대상 앱이 파일을 처리했는지를 구분하지 않는다. 이 단계에서는 공유 시트 호출 성공과 API 실패·파일 누락만 앱 상태로 구분한다.
 - 공유 불가 환경, 파일 누락, 공유 시트 실행 실패를 첨부파일 단위 오류로 표시해 기록 전체 화면의 오류로 확산하지 않는다.
+
+## Issue #13 — Custom URL Scheme 딥링크
+
+### 배운 내용
+
+- `app.json`의 `scheme: "nativelab"`가 iOS custom URL scheme과 Android intent filter 생성의 입력이 된다. Universal Links/App Links와는 별도의 방식이다.
+- `expo-linking`의 `useURL()`은 앱을 시작한 초기 URL과 앱 실행 중 수신되는 URL을 같은 흐름으로 제공하므로 별도의 초기 URL 조회와 이벤트 구독 코드를 중복하지 않아도 된다.
+- `nativelab://record/{id}`는 URL parser에서 hostname과 path로 나뉠 수 있으므로 두 값을 조합해 route를 해석하고, scheme·세그먼트 수·record ID 문자를 검증한다.
+- DB 로딩이 끝난 뒤 기록 존재 여부를 확인하고 `router.replace`로 이동해 중복 딥링크 이벤트가 navigation stack을 여러 번 쌓지 않게 한다.
+- 잘못된 scheme/경로와 존재하지 않는 기록은 Alert 후 목록으로 복귀시켜 앱이 빈 상세 화면에 머물지 않게 한다.
