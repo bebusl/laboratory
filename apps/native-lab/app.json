@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "Native Lab",
+    "slug": "native-lab",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "nativelab",
+    "userInterfaceStyle": "automatic",
+    "web": {
+      "output": "static"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
