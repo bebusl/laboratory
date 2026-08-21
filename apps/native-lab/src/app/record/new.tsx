@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
+  AccessibilityInfo,
   Platform,
   Pressable,
   ScrollView,
@@ -29,7 +30,9 @@ export default function NewRecordScreen() {
     const normalizedTitle = title.trim();
 
     if (!normalizedTitle) {
-      setError('기록 제목을 입력해 주세요.');
+      const message = '기록 제목을 입력해 주세요.';
+      setError(message);
+      AccessibilityInfo.announceForAccessibility(message);
       return;
     }
 
