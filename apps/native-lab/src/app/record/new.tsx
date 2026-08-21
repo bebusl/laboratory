@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   AccessibilityInfo,
@@ -23,6 +23,13 @@ export default function NewRecordScreen() {
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const isSavingRef = useRef(false);
+  const isActiveRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isActiveRef.current = false;
+    };
+  }, []);
 
   const handleSave = async () => {
     if (isSavingRef.current) return;
@@ -41,8 +48,10 @@ export default function NewRecordScreen() {
 
     try {
       const record = await createRecord({ title: normalizedTitle, memo: memo.trim() });
+      if (!isActiveRef.current) return;
       router.replace({ pathname: '/record/[id]', params: { id: record.id } });
     } catch {
+      if (!isActiveRef.current) return;
       isSavingRef.current = false;
       setError('기록을 저장하지 못했습니다. 잠시 후 다시 시도해 주세요.');
       setIsSaving(false);
@@ -60,8 +69,9 @@ export default function NewRecordScreen() {
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="기록 작성 취소"
+              disabled={isSaving}
               onPress={() => router.back()}
-              style={styles.backButton}
+              style={[styles.backButton, isSaving && styles.disabledButton]}
             >
               <Text style={styles.backLabel}>‹ 목록</Text>
             </Pressable>

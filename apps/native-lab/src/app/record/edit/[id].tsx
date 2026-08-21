@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -38,6 +38,13 @@ function EditRecordForm({ record }: { record: FieldRecord }) {
   const [memo, setMemo] = useState(record.memo);
   const [formError, setFormError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const isActiveRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isActiveRef.current = false;
+    };
+  }, []);
 
   const handleSave = async () => {
     const normalizedTitle = title.trim();
@@ -56,8 +63,10 @@ function EditRecordForm({ record }: { record: FieldRecord }) {
         memo: memo.trim(),
         updatedAt: new Date().toISOString(),
       });
+      if (!isActiveRef.current) return;
       router.back();
     } catch {
+      if (!isActiveRef.current) return;
       setFormError('기록을 수정하지 못했습니다. 잠시 후 다시 시도해 주세요.');
       setIsSaving(false);
     }
@@ -74,8 +83,9 @@ function EditRecordForm({ record }: { record: FieldRecord }) {
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="기록 수정 취소"
+              disabled={isSaving}
               onPress={() => router.back()}
-              style={styles.backButton}
+              style={[styles.backButton, isSaving && styles.disabledButton]}
             >
               <Text style={styles.backLabel}>‹ 상세</Text>
             </Pressable>
@@ -161,7 +171,12 @@ const styles = StyleSheet.create({
   content: { padding: 24, gap: 32 },
   centered: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 24 },
   header: { gap: 8 },
-  backButton: { alignSelf: 'flex-start', paddingVertical: 4 },
+  backButton: {
+    alignSelf: 'flex-start',
+    minHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: 8,
+  },
   backLabel: { color: '#1769e0', fontSize: 15, fontWeight: '600' },
   title: { color: '#17202d', fontSize: 32, fontWeight: '700' },
   description: { color: '#637083', fontSize: 15, lineHeight: 22 },
