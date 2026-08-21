@@ -1,11 +1,19 @@
 import type { SQLiteDatabase } from 'expo-sqlite';
 
+import type { StoredAttachment } from '@/features/attachments/types';
+
 export interface FieldRecord {
   id: string;
   title: string;
   memo: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface AttachmentRecord extends StoredAttachment {
+  id: string;
+  recordId: string;
+  createdAt: string;
 }
 
 interface FieldRecordRow {
@@ -101,6 +109,39 @@ export async function removeRecord(db: SQLiteDatabase, id: string) {
   }
 }
 
+export async function insertAttachment(
+  db: SQLiteDatabase,
+  recordId: string,
+  attachment: StoredAttachment
+) {
+  await db.runAsync(
+    `INSERT INTO attachments
+      (id, record_id, name, kind, mime_type, size, extension, uri, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    createAttachmentId(),
+    recordId,
+    attachment.name,
+    attachment.kind,
+    attachment.mimeType,
+    attachment.size,
+    attachment.extension,
+    attachment.uri,
+    new Date().toISOString()
+  );
+}
+
+export async function listAttachments(db: SQLiteDatabase, recordId: string) {
+  const rows = await db.getAllAsync<AttachmentRecordRow>(
+    `SELECT id, record_id, name, kind, mime_type, size, extension, uri, created_at
+     FROM attachments
+     WHERE record_id = ?
+     ORDER BY created_at ASC`,
+    recordId
+  );
+
+  return rows.map(toAttachmentRecord);
+}
+
 function toFieldRecord(row: FieldRecordRow): FieldRecord {
   return {
     id: row.id,
@@ -109,4 +150,34 @@ function toFieldRecord(row: FieldRecordRow): FieldRecord {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
+}
+
+interface AttachmentRecordRow {
+  id: string;
+  record_id: string;
+  name: string;
+  kind: StoredAttachment['kind'];
+  mime_type: string | null;
+  size: number | null;
+  extension: string | null;
+  uri: string;
+  created_at: string;
+}
+
+function toAttachmentRecord(row: AttachmentRecordRow): AttachmentRecord {
+  return {
+    createdAt: row.created_at,
+    extension: row.extension,
+    id: row.id,
+    kind: row.kind,
+    mimeType: row.mime_type,
+    name: row.name,
+    recordId: row.record_id,
+    size: row.size,
+    uri: row.uri,
+  };
+}
+
+function createAttachmentId() {
+  return `attachment-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }

@@ -1,16 +1,26 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useState } from 'react';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useRecords } from '@/features/records/record-context';
+import { AttachmentCard } from '@/features/attachments/attachment-card';
+import { shareAttachment } from '@/features/attachments/share-attachment';
+import { useRecordAttachments } from '@/features/records/record-attachments';
 
 export default function RecordDetailScreen() {
   const router = useRouter();
+  const [sharingAttachmentId, setSharingAttachmentId] = useState<string | null>(null);
+  const [sharingError, setSharingError] = useState<string | null>(null);
   const { id } = useLocalSearchParams<{ id: string }>();
   const { deleteRecord, error, getRecord, isLoading } = useRecords();
   const [isDeleting, setIsDeleting] = useState(false);
   const record = getRecord(id);
+  const {
+    attachments,
+    error: attachmentsError,
+    isLoading: areAttachmentsLoading,
+  } = useRecordAttachments(id);
 
   if (isLoading) {
     return <StatusScreen message="기록을 불러오는 중입니다." />;
@@ -73,11 +83,35 @@ export default function RecordDetailScreen() {
           <Text style={styles.editLabel}>기록 수정</Text>
         </Pressable>
 
-        <View style={styles.placeholder}>
+        <View style={styles.attachmentsSection}>
           <Text style={styles.placeholderTitle}>첨부파일</Text>
-          <Text style={styles.placeholderDescription}>
-            사진과 문서 첨부는 다음 네이티브 기능 학습 단계에서 추가합니다.
-          </Text>
+          {areAttachmentsLoading ? (
+            <Text style={styles.placeholderDescription}>첨부파일을 불러오는 중입니다.</Text>
+          ) : attachmentsError ? (
+            <Text style={styles.errorDescription}>첨부파일을 불러오지 못했습니다.</Text>
+          ) : attachments.length === 0 ? (
+            <Text style={styles.placeholderDescription}>첨부한 사진이나 문서가 없습니다.</Text>
+          ) : (
+            attachments.map(attachment => (
+              <AttachmentCard
+                attachment={attachment}
+                isSharing={sharingAttachmentId === attachment.id}
+                key={attachment.id}
+                onShare={() => {
+                  setSharingAttachmentId(attachment.id);
+                  setSharingError(null);
+                  void shareAttachment(attachment)
+                    .then(result => {
+                      if ('failure' in result) {
+                        setSharingError(result.failure.message);
+                      }
+                    })
+                    .finally(() => setSharingAttachmentId(null));
+                }}
+              />
+            ))
+          )}
+          {sharingError ? <Text style={styles.errorDescription}>{sharingError}</Text> : null}
         </View>
         <Pressable
           accessibilityRole="button"
@@ -92,9 +126,12 @@ export default function RecordDetailScreen() {
                   setIsDeleting(true);
                   void deleteRecord(record.id)
                     .then(() => router.replace('/'))
-                    .catch(() => {
+                    .catch((cause: unknown) => {
                       setIsDeleting(false);
-                      Alert.alert('삭제 실패', '기록을 삭제하지 못했습니다.');
+                      Alert.alert(
+                        '삭제 실패',
+                        cause instanceof Error ? cause.message : '기록을 삭제하지 못했습니다.'
+                      );
                     });
                 },
               },
@@ -156,9 +193,16 @@ const styles = StyleSheet.create({
   memoCard: { gap: 10, borderRadius: 16, backgroundColor: '#ffffff', padding: 18 },
   memoLabel: { color: '#637083', fontSize: 13, fontWeight: '700' },
   memo: { color: '#17202d', fontSize: 16, lineHeight: 25 },
-  placeholder: { gap: 8, borderRadius: 16, borderWidth: 1, borderColor: '#d9e0e8', padding: 18 },
+  attachmentsSection: {
+    gap: 10,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#d9e0e8',
+    padding: 18,
+  },
   placeholderTitle: { color: '#17202d', fontSize: 16, fontWeight: '700' },
   placeholderDescription: { color: '#637083', fontSize: 14, lineHeight: 21 },
+  errorDescription: { color: '#b42318', fontSize: 14, lineHeight: 21 },
   button: {
     marginTop: 12,
     borderRadius: 12,
