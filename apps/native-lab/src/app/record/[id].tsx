@@ -76,7 +76,12 @@ const styles = StyleSheet.create({
   scrollView: { flex: 1 },
   container: { padding: 24, gap: 24 },
   centered: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 24 },
-  backButton: { alignSelf: 'flex-start', paddingVertical: 4 },
+  backButton: {
+    alignSelf: 'flex-start',
+    minHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: 8,
+  },
   backLabel: { color: '#1769e0', fontSize: 15, fontWeight: '600' },
   header: { gap: 8 },
   title: { color: '#17202d', fontSize: 30, fontWeight: '700', textAlign: 'center' },

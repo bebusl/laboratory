@@ -117,7 +117,12 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   content: { padding: 24, gap: 32 },
   header: { gap: 8 },
-  backButton: { alignSelf: 'flex-start', paddingVertical: 4 },
+  backButton: {
+    alignSelf: 'flex-start',
+    minHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: 8,
+  },
   backLabel: { color: '#1769e0', fontSize: 15, fontWeight: '600' },
   title: { color: '#17202d', fontSize: 32, fontWeight: '700' },
   description: { color: '#637083', fontSize: 15, lineHeight: 22 },
