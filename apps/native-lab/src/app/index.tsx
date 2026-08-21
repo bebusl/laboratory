@@ -22,6 +22,16 @@ export default function HomeScreen() {
             <Text style={styles.description}>
               사진, 파일, 메모를 기기에 남기는 React Native 학습 앱입니다.
             </Text>
+            {records.length > 0 ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="새 기록 만들기"
+                onPress={() => router.push('/record/new')}
+                style={({ pressed }) => [styles.button, pressed && styles.pressed]}
+              >
+                <Text style={styles.buttonLabel}>새 기록 만들기</Text>
+              </Pressable>
+            ) : null}
           </View>
         }
         renderItem={({ item }) => (

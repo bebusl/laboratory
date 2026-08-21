@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useRecords } from '@/features/records/record-context';
@@ -33,7 +33,7 @@ export default function RecordDetailScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container} style={styles.scrollView}>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="기록 목록으로 돌아가기"
@@ -59,7 +59,7 @@ export default function RecordDetailScreen() {
             사진과 문서 첨부는 다음 네이티브 기능 학습 단계에서 추가합니다.
           </Text>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -73,7 +73,8 @@ function formatDate(value: string) {
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#f6f7f9' },
-  container: { flex: 1, padding: 24, gap: 24 },
+  scrollView: { flex: 1 },
+  container: { padding: 24, gap: 24 },
   centered: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 24 },
   backButton: { alignSelf: 'flex-start', paddingVertical: 4 },
   backLabel: { color: '#1769e0', fontSize: 15, fontWeight: '600' },
