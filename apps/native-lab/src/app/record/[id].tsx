@@ -1,5 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useRecords } from '@/features/records/record-context';
@@ -8,6 +9,7 @@ export default function RecordDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { deleteRecord, error, getRecord, isLoading } = useRecords();
+  const [isDeleting, setIsDeleting] = useState(false);
   const record = getRecord(id);
 
   if (isLoading) {
@@ -65,7 +67,8 @@ export default function RecordDetailScreen() {
           accessibilityRole="button"
           accessibilityLabel="기록 수정"
           onPress={() => router.push({ pathname: '/record/edit/[id]', params: { id: record.id } })}
-          style={styles.editButton}
+          disabled={isDeleting}
+          style={[styles.editButton, isDeleting && styles.disabledButton]}
         >
           <Text style={styles.editLabel}>기록 수정</Text>
         </Pressable>
@@ -86,14 +89,19 @@ export default function RecordDetailScreen() {
                 text: '삭제',
                 style: 'destructive',
                 onPress: () => {
+                  setIsDeleting(true);
                   void deleteRecord(record.id)
                     .then(() => router.replace('/'))
-                    .catch(() => Alert.alert('삭제 실패', '기록을 삭제하지 못했습니다.'));
+                    .catch(() => {
+                      setIsDeleting(false);
+                      Alert.alert('삭제 실패', '기록을 삭제하지 못했습니다.');
+                    });
                 },
               },
             ]);
           }}
-          style={styles.deleteButton}
+          disabled={isDeleting}
+          style={[styles.deleteButton, isDeleting && styles.disabledButton]}
         >
           <Text style={styles.deleteLabel}>기록 삭제</Text>
         </Pressable>
@@ -167,6 +175,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   deleteLabel: { color: '#b42318', fontSize: 15, fontWeight: '700' },
+  disabledButton: { opacity: 0.55 },
   editButton: {
     alignItems: 'center',
     borderRadius: 12,
