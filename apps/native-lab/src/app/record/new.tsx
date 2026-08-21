@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -20,8 +20,12 @@ export default function NewRecordScreen() {
   const [title, setTitle] = useState('');
   const [memo, setMemo] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const isSavingRef = useRef(false);
 
   const handleSave = () => {
+    if (isSavingRef.current) return;
+
     const normalizedTitle = title.trim();
 
     if (!normalizedTitle) {
@@ -29,6 +33,8 @@ export default function NewRecordScreen() {
       return;
     }
 
+    isSavingRef.current = true;
+    setIsSaving(true);
     const record = createRecord({ title: normalizedTitle, memo: memo.trim() });
     router.replace({ pathname: '/record/[id]', params: { id: record.id } });
   };
@@ -89,10 +95,15 @@ export default function NewRecordScreen() {
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="기록 저장"
+              disabled={isSaving}
               onPress={handleSave}
-              style={({ pressed }) => [styles.saveButton, pressed && styles.pressed]}
+              style={({ pressed }) => [
+                styles.saveButton,
+                isSaving && styles.disabledButton,
+                pressed && styles.pressed,
+              ]}
             >
-              <Text style={styles.saveLabel}>기록 저장</Text>
+              <Text style={styles.saveLabel}>{isSaving ? '저장 중…' : '기록 저장'}</Text>
             </Pressable>
           </View>
         </ScrollView>
@@ -133,5 +144,6 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   saveLabel: { color: '#ffffff', fontSize: 15, fontWeight: '700' },
+  disabledButton: { opacity: 0.55 },
   pressed: { opacity: 0.72 },
 });
