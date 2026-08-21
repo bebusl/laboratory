@@ -56,7 +56,7 @@ function EditRecordForm({ record }: { record: FieldRecord }) {
         memo: memo.trim(),
         updatedAt: new Date().toISOString(),
       });
-      router.replace({ pathname: '/record/[id]', params: { id: record.id } });
+      router.back();
     } catch {
       setFormError('기록을 수정하지 못했습니다. 잠시 후 다시 시도해 주세요.');
       setIsSaving(false);

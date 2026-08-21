@@ -76,9 +76,10 @@ export function RecordProvider({ children }: PropsWithChildren) {
       getRecord: id => records.find(record => record.id === id),
       updateRecord: async record => {
         await persistRecordUpdate(db, record);
-        setRecords(current =>
-          current.map(currentRecord => (currentRecord.id === record.id ? record : currentRecord))
-        );
+        setRecords(current => [
+          record,
+          ...current.filter(currentRecord => currentRecord.id !== record.id),
+        ]);
       },
       deleteRecord: async id => {
         await removeRecord(db, id);
