@@ -1,0 +1,13 @@
+@use '../styles' as *;
+
+.root {
+  @include input-base;
+
+  min-height: 96px;
+  padding: $spacing-3;
+  border-radius: $radius-md;
+  resize: vertical;
+  font-family: inherit;
+  font-size: $font-size-sm;
+  line-height: $line-height-normal;
+}

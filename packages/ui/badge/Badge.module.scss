@@ -1,0 +1,55 @@
+@use '../styles' as *;
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border: 1px solid transparent;
+  border-radius: $radius-full;
+  font-weight: $font-weight-medium;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.sm {
+  min-height: 20px;
+  padding-inline: 6px;
+  font-size: 11px;
+}
+
+.md {
+  min-height: 24px;
+  padding-inline: $spacing-2;
+  font-size: $font-size-xs;
+}
+
+.default {
+  color: $color-gray-700;
+  background: $color-gray-100;
+}
+
+.success {
+  color: $color-success-dark;
+  background: $color-success-light;
+}
+
+.warning {
+  color: $color-warning-dark;
+  background: $color-warning-light;
+}
+
+.danger {
+  color: $color-error-dark;
+  background: $color-error-light;
+}
+
+.info {
+  color: $color-info-dark;
+  background: $color-info-light;
+}
+
+.outline {
+  color: $color-text-secondary;
+  background: transparent;
+  border-color: $color-border-default;
+}

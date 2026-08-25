@@ -1,0 +1,38 @@
+@use '../styles' as *;
+
+.root {
+  position: relative;
+  display: inline-flex;
+}
+
+.content {
+  position: absolute;
+  z-index: $z-dropdown;
+  bottom: calc(100% + $spacing-2);
+  left: 50%;
+  width: max-content;
+  max-width: 240px;
+  padding: $spacing-2 $spacing-3;
+  border-radius: $radius-md;
+  background: $color-gray-900;
+  color: $color-text-inverse;
+  font-size: $font-size-xs;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 4px);
+  transition:
+    opacity $transition-fast,
+    transform $transition-fast;
+}
+
+.root:hover .content,
+.root:focus-within .content {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    transition: none;
+  }
+}

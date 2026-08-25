@@ -1,0 +1,45 @@
+@use '../styles' as *;
+
+.root {
+  display: flex;
+  gap: $spacing-3;
+  padding: $spacing-3 $spacing-4;
+  border: 1px solid;
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+  line-height: $line-height-normal;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.title {
+  font-weight: $font-weight-semibold;
+}
+
+.info {
+  color: $color-info-dark;
+  border-color: $color-primary-200;
+  background: $color-info-light;
+}
+
+.success {
+  color: $color-success-dark;
+  border-color: #bbf7d0;
+  background: $color-success-light;
+}
+
+.warning {
+  color: $color-warning-dark;
+  border-color: #fde68a;
+  background: $color-warning-light;
+}
+
+.danger {
+  color: $color-error-dark;
+  border-color: #fecaca;
+  background: $color-error-light;
+}

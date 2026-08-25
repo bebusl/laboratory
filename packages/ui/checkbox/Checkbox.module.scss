@@ -1,0 +1,15 @@
+@use '../styles' as *;
+
+.root {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: $color-primary-600;
+  cursor: pointer;
+
+  @include focus-visible-ring($offset: 3px);
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}

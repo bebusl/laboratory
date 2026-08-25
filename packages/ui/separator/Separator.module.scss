@@ -1,0 +1,17 @@
+@use '../styles' as *;
+
+.root {
+  flex-shrink: 0;
+  border: 0;
+  background: $color-gray-200;
+}
+
+.horizontal {
+  width: 100%;
+  height: 1px;
+}
+
+.vertical {
+  width: 1px;
+  height: 100%;
+}

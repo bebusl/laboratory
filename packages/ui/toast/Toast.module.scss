@@ -1,0 +1,46 @@
+@use '../styles' as *;
+
+.root {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-4;
+  width: min(380px, calc(100vw - #{$spacing-8}));
+  padding: $spacing-4;
+  border: 1px solid $color-gray-200;
+  border-radius: $radius-lg;
+  background: $color-bg-base;
+  box-shadow: $shadow-lg;
+  color: $color-text-primary;
+  font-size: $font-size-sm;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+  line-height: $line-height-normal;
+}
+
+.success {
+  border-color: #bbf7d0;
+}
+
+.warning {
+  border-color: #fde68a;
+}
+
+.danger {
+  border-color: #fecaca;
+}
+
+.close {
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: $color-text-secondary;
+  cursor: pointer;
+  font-size: $font-size-lg;
+  line-height: 1;
+}

@@ -1,0 +1,11 @@
+@use '../styles' as *;
+
+.root {
+  @include input-base;
+
+  height: $spacing-10;
+  padding-inline: $spacing-3;
+  border-radius: $radius-md;
+  font-family: inherit;
+  font-size: $font-size-sm;
+}
