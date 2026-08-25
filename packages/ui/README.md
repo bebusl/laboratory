@@ -24,14 +24,20 @@
 
 Radix primitive는 접근성, focus 관리, 키보드 상호작용이 복잡한 컴포넌트의 참고 구현 또는 중간 구현으로 사용합니다. 시각 스타일은 `@brillbe/ui`가 소유합니다.
 
-## 현재 컴포넌트
+## 컴포넌트 카탈로그
 
-| 컴포넌트                        | 구현               | 상태                       |
-| ------------------------------- | ------------------ | -------------------------- |
-| `Button`                        | native HTML + Sass | 직접 구현 시작             |
-| `Input`                         | native HTML + Sass | 사용 가능                  |
-| `Field`                         | native HTML + Sass | 사용 가능                  |
-| `Dialog` / `Popover` / `Select` | 미정               | 필요할 때 adapter부터 추가 |
+admin 화면에서 반복해서 사용하는 기본 컴포넌트는 다음과 같이 구성되어 있습니다.
+
+| 영역     | 컴포넌트                                                                                             |
+| -------- | ---------------------------------------------------------------------------------------------------- |
+| 액션     | `Button`, `DropdownMenu`                                                                             |
+| 폼       | `Input`, `Textarea`, `Select`, `Combobox`, `DatePicker`, `Checkbox`, `RadioGroup`, `Switch`, `Field` |
+| 표시     | `Badge`, `Avatar`, `Alert`, `Progress`, `Spinner`, `Skeleton`, `EmptyState`, `Toast`                 |
+| 레이아웃 | `Card`, `Separator`, `Breadcrumb`                                                                    |
+| 데이터   | `Table`, `Pagination`, `Tabs`                                                                        |
+| 오버레이 | `Dialog`, `DropdownMenu`, `Tooltip`                                                                  |
+
+현재 컴포넌트는 모두 native HTML과 Sass를 기본으로 하며, 각 컴포넌트의 Storybook story에서 주요 상태를 확인할 수 있습니다. `Combobox`와 `DatePicker`는 브라우저 native 동작을 우선 제공하고, 제품에서 검색/달력 UI가 필요해지면 별도 고급 adapter로 확장합니다.
 
 ## 사용법
 
@@ -80,6 +86,11 @@ packages/ui/
 │   └── Button.stories.tsx
 ├── field/
 ├── input/
+├── table/
+├── pagination/
+├── tabs/
+├── dialog/
+├── dropdown-menu/
 ├── styles/
 │   ├── _mixins.scss
 │   ├── _variables.scss
@@ -115,9 +126,9 @@ Storybook story는 컴포넌트의 API, 시각 상태, 접근성 동작을 확�
 
 ## 구현 순서
 
-1. native HTML 기반의 `Button`, `Input`, `Field`
-2. `Checkbox`, `Switch`, `Tabs`
-3. `Dialog`, `Popover`, `Tooltip`
-4. `Select`, `Combobox`, `DatePicker`처럼 상호작용이 복잡한 컴포넌트
+1. 폼과 데이터 표시: `Input`, `Textarea`, `Select`, `Field`, `Table`, `Pagination`
+2. 상태와 피드백: `Badge`, `Alert`, `Progress`, `Skeleton`, `EmptyState`
+3. 내비게이션과 오버레이: `Tabs`, `Dialog`, `DropdownMenu`, `Breadcrumb`
+4. 제품 요구사항이 확정된 뒤 검색형 `Combobox`, 달력형 `DatePicker`, `Toast` provider, `DataGrid` 확장
 
 각 컴포넌트는 구현 전에 키보드 동작, focus 이동, ARIA 관계, controlled/uncontrolled 여부를 먼저 정리합니다.
