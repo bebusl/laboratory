@@ -1,0 +1,57 @@
+@use '../styles' as *;
+
+.root {
+  position: relative;
+  display: inline-block;
+}
+
+.content {
+  position: absolute;
+  z-index: $z-dropdown;
+  top: calc(100% + $spacing-2);
+  min-width: 180px;
+  padding: $spacing-1;
+  border: 1px solid $color-gray-200;
+  border-radius: $radius-md;
+  background: $color-bg-base;
+  box-shadow: $shadow-lg;
+}
+
+.start {
+  left: 0;
+}
+
+.end {
+  right: 0;
+}
+
+.item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  padding: $spacing-2 $spacing-3;
+  border: 0;
+  border-radius: $radius-sm;
+  background: transparent;
+  color: $color-text-primary;
+  cursor: pointer;
+  font: inherit;
+  font-size: $font-size-sm;
+  text-align: left;
+
+  &:hover,
+  &:focus-visible {
+    background: $color-bg-muted;
+    outline: none;
+  }
+}
+
+.inset {
+  padding-left: $spacing-8;
+}
+
+.separator {
+  margin: $spacing-1 0;
+  border: 0;
+  border-top: 1px solid $color-gray-200;
+}

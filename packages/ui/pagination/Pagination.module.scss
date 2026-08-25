@@ -1,0 +1,61 @@
+@use '../styles' as *;
+
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-3;
+  color: $color-text-secondary;
+  font-size: $font-size-sm;
+}
+
+.pages {
+  display: flex;
+  align-items: center;
+  gap: $spacing-1;
+}
+
+.button {
+  @include focus-visible-ring;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding-inline: $spacing-2;
+  border: 1px solid transparent;
+  border-radius: $radius-md;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+
+  &:hover:not(:disabled) {
+    background: $color-gray-100;
+    color: $color-text-primary;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+}
+
+.current {
+  border-color: $color-primary-600;
+  background: $color-primary-600;
+  color: $color-text-inverse;
+
+  &:hover:not(:disabled) {
+    background: $color-primary-700;
+    color: $color-text-inverse;
+  }
+}
+
+.ellipsis {
+  display: inline-flex;
+  width: 32px;
+  align-items: center;
+  justify-content: center;
+}

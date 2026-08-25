@@ -1,0 +1,65 @@
+@use '../styles' as *;
+
+.wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: separate;
+  color: $color-text-primary;
+  font-size: $font-size-sm;
+  text-align: left;
+}
+
+.caption {
+  padding: $spacing-3 0;
+  color: $color-text-secondary;
+  font-size: $font-size-xs;
+  text-align: left;
+}
+
+.header {
+  background: $color-bg-subtle;
+}
+
+.head,
+.cell {
+  height: $spacing-12;
+  padding: $spacing-3 $spacing-4;
+  border-bottom: 1px solid $color-gray-200;
+  vertical-align: middle;
+}
+
+.head {
+  color: $color-text-secondary;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  white-space: nowrap;
+}
+
+.row {
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background: $color-bg-subtle;
+  }
+
+  &:last-child .cell {
+    border-bottom: 0;
+  }
+}
+
+.footer {
+  background: $color-bg-subtle;
+  font-weight: $font-weight-medium;
+}
+
+.empty {
+  height: 180px;
+  padding: $spacing-8;
+  color: $color-text-secondary;
+  text-align: center;
+}
