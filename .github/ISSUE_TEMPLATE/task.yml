@@ -1,0 +1,108 @@
+name: '🔨 학습 Task'
+description: '학습 프로젝트의 질문을 검증하기 위한 작은 실험이나 구현을 정의합니다.'
+title: '[Task] '
+labels:
+  - 'task'
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        하나의 Task는 가능한 한 하나의 학습 질문이나 실험에 집중해주세요.
+        작업을 끝낸 뒤 결과와 배운 점을 기록하면 이슈가 학습 자료로 남습니다.
+
+  - type: input
+    id: parent
+    attributes:
+      label: '연결된 학습 프로젝트'
+      description: '이 작업이 속한 학습 프로젝트 이슈 번호나 URL을 적어주세요.'
+      placeholder: '#12 또는 https://github.com/OWNER/REPO/issues/12'
+    validations:
+      required: true
+
+  - type: input
+    id: learning-focus
+    attributes:
+      label: '이번 작업에서 배울 것'
+      description: '이번 Task를 통해 이해하거나 연습할 개념을 적어주세요.'
+      placeholder: '예: 비동기 작업의 재시도와 지수 백오프'
+    validations:
+      required: true
+
+  - type: textarea
+    id: objective
+    attributes:
+      label: '작업 목표'
+      description: '무엇을 구현하거나 실험하고, 어떤 질문에 답할지 설명해주세요.'
+      placeholder: |
+        파일을 청크로 나누고 각 청크의 상태를 관리하는 방식이
+        중단 후 재개에 어떤 영향을 주는지 확인한다.
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: '실험·구현 내용'
+      description: '실제로 시도할 내용을 작은 단계로 나열해주세요.'
+      placeholder: |
+        - 파일을 지정된 크기로 분할하는 함수 작성
+        - 각 청크에 고유 ID 부여
+        - 청크별 대기/업로드/성공/실패 상태 관리
+        - 빈 파일과 마지막 청크 크기 처리
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-result
+    attributes:
+      label: '예상 결과와 관찰 포인트'
+      description: '시작 전에 예상하는 결과와 집중해서 볼 지점을 적어주세요.'
+      placeholder: |
+        - [ ] 지정된 크기에 맞게 파일이 분할될 것이다.
+        - [ ] 마지막 청크의 크기가 정확하게 계산될 것이다.
+        - [ ] 청크별 상태를 독립적으로 변경할 수 있을 것이다.
+
+  - type: textarea
+    id: verification
+    attributes:
+      label: '검증 방법'
+      description: '가설이나 예상 결과를 어떻게 확인할지 적어주세요.'
+      placeholder: |
+        - 단위 테스트:
+        - 통합 테스트:
+        - 로그나 측정값:
+        - 수동 확인:
+    validations:
+      required: true
+
+  - type: textarea
+    id: result
+    attributes:
+      label: '실제 결과와 관찰'
+      description: '작업을 마친 뒤 예상과 달랐던 점, 근거와 결과를 기록해주세요.'
+      placeholder: |
+        - 실제로 확인한 결과:
+        - 예상과 달랐던 점:
+        - 근거가 되는 테스트, 로그 또는 화면:
+
+  - type: textarea
+    id: reflection
+    attributes:
+      label: '배운 점과 다음 질문'
+      description: '이번 Task에서 배운 점, 막혔던 지점과 다음에 탐구할 질문을 적어주세요.'
+      placeholder: |
+        - 새롭게 이해한 개념:
+        - 막혔던 지점과 해결 방법:
+        - 다음에 더 알아볼 것:
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: '선행 작업과 참고 자료'
+      description: '먼저 완료되어야 할 작업, 막는 요소나 참고 자료를 적어주세요.'
+      placeholder: |
+        - 선행 이슈: #13
+        - Blocking:
+        - Blocked by:
+        - 참고 문서:

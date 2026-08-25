@@ -1,0 +1,124 @@
+name: '🧭 학습 프로젝트'
+description: '하나의 주제를 탐구하며 무엇을 배우고 검증할지 기록합니다.'
+title: '[Learning] '
+labels:
+  - 'mini-project'
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        이 이슈는 하나의 주제를 깊이 탐구하기 위한 학습 노트입니다.
+        완성도 높은 제품을 만드는 것보다, 질문을 세우고 실험하며 배운 과정을 남기는 데 집중합니다.
+        세부 구현이나 실험은 Task 이슈로 나눈 뒤 이 이슈에 연결해주세요.
+
+  - type: input
+    id: summary
+    attributes:
+      label: '탐구 주제'
+      description: '무엇을 만들거나 탐구하려는지 한 문장으로 적어주세요.'
+      placeholder: '예: 네트워크가 끊겨도 이어서 전송할 수 있는 파일 업로더'
+    validations:
+      required: true
+
+  - type: textarea
+    id: learning-goal
+    attributes:
+      label: '학습 목표'
+      description: '이 프로젝트를 통해 이해하거나 연습하고 싶은 개념을 적어주세요.'
+      placeholder: |
+        - 비동기 작업의 상태를 어떻게 모델링하는지 이해한다.
+        - 실패한 작업을 안전하게 재시도하는 방법을 연습한다.
+    validations:
+      required: true
+
+  - type: textarea
+    id: questions
+    attributes:
+      label: '학습 질문'
+      description: '구현이나 조사를 끝낸 뒤 답하고 싶은 질문을 1~3개 적어주세요.'
+      placeholder: |
+        1. 네트워크가 끊겼을 때 이미 완료된 청크를 어떻게 구분할 수 있을까?
+        2. 재시도 횟수와 대기 시간은 어떤 기준으로 정하는 것이 좋을까?
+    validations:
+      required: true
+
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: '가설과 예상'
+      description: '시작하기 전에 예상하는 동작이나 결과를 적어주세요.'
+      placeholder: |
+        - 청크별 상태를 저장하면 중단 후 완료된 부분부터 재개할 수 있을 것이다.
+        - 지수 백오프를 적용하면 일시적인 네트워크 오류를 더 안정적으로 처리할 수 있을 것이다.
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: '실험 범위'
+      description: '이번 프로젝트에서 직접 다룰 범위와 다루지 않을 범위를 적어주세요.'
+      placeholder: |
+        포함:
+        - 브라우저에서 파일을 청크로 나누고 상태를 관리한다.
+        - 네트워크 오류를 흉내 내고 재개 동작을 확인한다.
+
+        제외:
+        - 실제 클라우드 스토리지 연동
+        - 사용자 인증
+    validations:
+      required: true
+
+  - type: textarea
+    id: approach
+    attributes:
+      label: '접근 방법과 비교 대상'
+      description: '어떤 방식으로 실험하고, 다른 방식과 비교할지 적어주세요.'
+      placeholder: |
+        - 먼저 메모리 상태만 사용하는 단순한 방식을 구현한다.
+        - 이후 로컬 저장소를 사용하는 방식과 복구 가능성을 비교한다.
+
+  - type: textarea
+    id: verification
+    attributes:
+      label: '검증 방법'
+      description: '가설을 확인하기 위해 어떤 입력, 테스트, 로그나 결과를 볼지 적어주세요.'
+      placeholder: |
+        - 네트워크 중단 시나리오에서 완료된 청크가 다시 전송되지 않는지 확인한다.
+        - 재시도 횟수와 대기 시간을 로그로 확인한다.
+    validations:
+      required: true
+
+  - type: textarea
+    id: definition-of-done
+    attributes:
+      label: '학습 완료 기준'
+      description: '무엇을 확인하거나 기록하면 이번 탐구를 마무리할지 적어주세요.'
+      value: |
+        - [ ] 최소한의 동작하는 결과물을 만들었다.
+        - [ ] 학습 질문에 대한 답 또는 아직 모르는 부분을 기록했다.
+        - [ ] 가설과 실제 결과의 차이를 정리했다.
+        - [ ] 핵심 로직을 테스트나 실행 결과로 검증했다.
+        - [ ] 배운 점과 다음에 탐구할 질문을 남겼다.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reflection
+    attributes:
+      label: '회고와 다음 질문'
+      description: '탐구를 마친 뒤 무엇을 배웠고 무엇이 새롭게 궁금해졌는지 적어주세요.'
+      placeholder: |
+        - 새롭게 이해한 개념:
+        - 예상과 달랐던 결과:
+        - 아직 이해하지 못한 부분:
+        - 다음에 탐구할 질문:
+
+  - type: textarea
+    id: references
+    attributes:
+      label: '참고 자료'
+      description: '관련 문서, 디자인, 레퍼런스나 선행 프로젝트를 첨부해주세요.'
+      placeholder: |
+        - 관련 문서:
+        - 디자인:
+        - 참고 프로젝트:
