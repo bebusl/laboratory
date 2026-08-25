@@ -1,0 +1,88 @@
+@use '../styles' as *;
+
+.root {
+  @include flex-center;
+  @include interactive;
+  @include focus-visible-ring;
+
+  min-width: 0;
+  border: 1px solid transparent;
+  font-family: inherit;
+  font-weight: $font-weight-medium;
+  white-space: nowrap;
+
+  &:disabled {
+    pointer-events: none;
+  }
+
+  &[data-loading='true'] {
+    cursor: wait;
+  }
+}
+
+.sm {
+  height: $spacing-8;
+  padding-inline: $spacing-3;
+  border-radius: $radius-md;
+  font-size: $font-size-xs;
+}
+
+.md {
+  height: $spacing-10;
+  padding-inline: $spacing-4;
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+}
+
+.lg {
+  height: $spacing-12;
+  padding-inline: $spacing-6;
+  border-radius: $radius-lg;
+  font-size: $font-size-base;
+}
+
+.primary {
+  color: $color-text-inverse;
+  background-color: $color-primary-600;
+
+  &:hover:not(:disabled) {
+    background-color: $color-primary-700;
+  }
+}
+
+.secondary {
+  color: $color-text-primary;
+  background-color: $color-gray-100;
+
+  &:hover:not(:disabled) {
+    background-color: $color-gray-200;
+  }
+}
+
+.outline {
+  color: $color-text-primary;
+  background-color: transparent;
+  border-color: $color-border-default;
+
+  &:hover:not(:disabled) {
+    background-color: $color-bg-muted;
+  }
+}
+
+.ghost {
+  color: $color-text-primary;
+  background-color: transparent;
+
+  &:hover:not(:disabled) {
+    background-color: $color-bg-muted;
+  }
+}
+
+.danger {
+  color: $color-text-inverse;
+  background-color: $color-error;
+
+  &:hover:not(:disabled) {
+    background-color: $color-error-dark;
+  }
+}
