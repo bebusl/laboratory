@@ -5,9 +5,7 @@ import styles from './Input.module.scss';
 type Props = ComponentProps<'input'>;
 
 const Input = ({ className, type, ...props }: Props) => {
-  return (
-    <input type={type} data-slot="input" className={cn(styles.root, className)} {...props}></input>
-  );
+  return <input type={type} data-slot="input" className={cn(styles.root, className)} {...props} />;
 };
 
 export default Input;

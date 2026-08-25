@@ -57,7 +57,7 @@ function FieldLabel({ className, ...props }: ComponentProps<'label'>) {
 }
 
 function FieldTitle({ className, ...props }: ComponentProps<'div'>) {
-  return <div data-slot="field-label" className={cn(styles.fieldTitle, className)} {...props} />;
+  return <div data-slot="field-title" className={cn(styles.fieldTitle, className)} {...props} />;
 }
 
 function FieldDescription({ className, ...props }: ComponentProps<'p'>) {

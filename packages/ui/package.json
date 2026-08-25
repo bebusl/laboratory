@@ -2,7 +2,13 @@
   "name": "@brillbe/ui",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "types": "./index.ts",
+  "exports": {
+    ".": {
+      "types": "./index.ts",
+      "import": "./index.ts"
+    }
+  },
   "type": "module",
   "scripts": {
     "dev": "storybook dev -p 6006",
