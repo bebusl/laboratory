@@ -9,11 +9,8 @@ function getAbsolutePath(value: string): string {
 }
 const config: StorybookConfig = {
   stories: [
-    '../button/**/*.stories.@(js|jsx|mjs|ts|tsx)',
-    '../showcase/**/*.stories.@(js|jsx|mjs|ts|tsx)',
-    '../field/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+    '../{alert,avatar,badge,breadcrumb,button,card,checkbox,combobox,date-picker,dialog,dropdown-menu,empty-state,feedback,field,input,pagination,radio-group,select,separator,switch,table,tabs,textarea,toast,tooltip}/**/*.stories.@(js|jsx|mjs|ts|tsx)',
     '../field/**/*.mdx',
-    '../input/**/*.stories.@(js|jsx|mjs|ts|tsx)',
   ],
   addons: [
     getAbsolutePath('@chromatic-com/storybook'),
