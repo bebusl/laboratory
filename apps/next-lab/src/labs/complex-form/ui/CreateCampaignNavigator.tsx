@@ -1,10 +1,10 @@
 'use client';
 
 import { type ChangeEventHandler, MouseEventHandler, useState } from 'react';
-import { CAMPAIGN_MODES, CAMPAIGN_SECTIONS } from '@/entities/campaign/model/constants';
-import { CampaignFormMode } from '@/entities/campaign/model/types';
-import { isValidCampaignFormMode } from '@/entities/campaign/model/utils';
-import { scrollToElement } from '@/shared/utils/scroll-to-element-id';
+import { scrollToElement } from '../lib/scroll-to-element-id';
+import { CAMPAIGN_MODES, CAMPAIGN_SECTIONS } from '../model/constants';
+import type { CampaignFormMode } from '../model/types';
+import { isValidCampaignFormMode } from '../model/utils';
 
 interface CreateCampaignNavigatorProps {
   onChangeMode: (mode: CampaignFormMode) => void;

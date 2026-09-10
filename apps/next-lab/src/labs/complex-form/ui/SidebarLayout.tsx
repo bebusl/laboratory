@@ -1,7 +1,8 @@
-// shared/ui/layouts/SidebarLayout.tsx
+import type { ReactNode } from 'react';
+
 interface SidebarLayoutProps {
-  sidebar: React.ReactNode; // 왼쪽 슬롯
-  content: React.ReactNode; // 오른쪽 슬롯
+  sidebar: ReactNode;
+  content: ReactNode;
 }
 
 export const SidebarLayout = ({ sidebar, content }: SidebarLayoutProps) => {

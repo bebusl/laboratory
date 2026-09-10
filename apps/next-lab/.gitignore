@@ -17,6 +17,11 @@
 /.next/
 /out/
 
+# test output
+/coverage/
+/playwright-report/
+/test-results/
+
 # production
 /build
 

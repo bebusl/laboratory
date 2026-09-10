@@ -62,6 +62,13 @@ export default [
     },
   },
   {
+    files: ['**/*.{ts,tsx}'],
+    rules: {
+      // TypeScript validates unresolved types; ESLint's core rule is not type-aware.
+      'no-undef': 'off',
+    },
+  },
+  {
     files: ['index.js', 'buffer.js'],
     languageOptions: {
       sourceType: 'commonjs',
